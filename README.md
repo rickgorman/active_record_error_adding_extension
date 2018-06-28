@@ -1,6 +1,42 @@
 # ActiveRecordErrorAddingExtension
 
+A DSL that makes custom validations and `before_*` easier to read.
 
+## Summary 
+
+```
+class User < ActiveRecord::Base
+  before_save :before_save_run_callback
+
+  def before_save_run_callback
+    add_error_for(:some_attribute).if failure_running callback
+  end
+  
+  def before_save_no_bobs
+    add_error_for(:name).if user.name == 'bob'
+  end
+  
+  private
+  
+  def callback
+    # bulk of the method
+    
+    if success
+      return [true, '']
+    else
+      return [false, 'awesome error message']
+    end
+  end
+  
+end
+```
+
+```
+pry> user = User.new
+pry> user.name = 'bob'
+pry> user.save!
+pry> user.errors.messages
+=> {:some_attribute=>["awesome error message"], :name=>["default error message"]}
 
 ## Installation
 
@@ -18,15 +54,7 @@ Or install it yourself as:
 
     $ gem install active_record_error_adding_extension
 
-## Usage
-
-
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/active_record_error_adding_extension.
+Bug reports and pull requests are welcome on GitHub at https://github.com/rickgorman/active_record_error_adding_extension.
