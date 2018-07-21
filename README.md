@@ -2,7 +2,7 @@
 
 A DSL that makes custom validations and `before_*` easier to read.
 
-## Summary 
+## Summary
 
 ```
 class User < ActiveRecord::Base
@@ -11,23 +11,23 @@ class User < ActiveRecord::Base
   def before_save_run_callback
     add_error_for(:some_attribute).if failure_running callback
   end
-  
+
   def before_save_no_bobs
     add_error_for(:name).if user.name == 'bob'
   end
-  
+
   private
-  
+
   def callback
     # bulk of the method
-    
+
     if success
       return [true, '']
     else
       return [false, 'awesome error message']
     end
   end
-  
+
 end
 ```
 
